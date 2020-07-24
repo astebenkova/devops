@@ -1,10 +1,10 @@
 #!/bin/bash
 
-## Pre-defined variables
+# Pre-defined variables
 MEM_SIZE=512
 VCPUS=1
 OS_VARIANT="ubuntu16.04"
-ISO_FILE="$HOME/Projects/images/ubuntu-16.04.6-server-amd64.iso"
+ISO_FILE="/var/lib/libvirt/images/basic_images/ubuntu-16.04.6-server-amd64.iso"
 VM_IMAGE_DIR=/var/lib/libvirt/images
 OS_TYPE="linux"
 DISK_SIZE=5

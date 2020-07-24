@@ -4,7 +4,7 @@
 IMAGES_DIR=/var/lib/libvirt/images/basic_images
 WORKDIR=/var/lib/libvirt/images
 DISK_SIZE=5G
-VM_HOSTNAME=ubuntu_16.04_$(date +"%d_%m_%Y_%H%M")
+VM_HOSTNAME=ubuntu_$(date +"%d_%m_%Y_%H%M")_ks
 # Please, download the image to IMAGES_DIR
 CLOUD_IMAGE_NAME="ubuntu-server-16.04.qcow2"
 SSH_PUBLIC_KEY=$(cat "${HOME}"/.ssh/id_rsa.pub)
@@ -54,4 +54,3 @@ echo "[*] Launching a Virtual Machine..."
 virt-install --connect qemu:///system --virt-type kvm --name ${VM_HOSTNAME} --ram 512 --vcpus=1 --os-type linux \
              --os-variant ubuntu16.04 --disk path=${WORKDIR}/${VM_HOSTNAME}.qcow2,format=qcow2 \
              --disk ${WORKDIR}/${VM_HOSTNAME}.iso,device=cdrom --import --network network=br1 --noautoconsole
-
