@@ -37,15 +37,16 @@ EOF
 
 cat > /tmp/user-data <<EOF
 #cloud-config
-user: ${VM_USER}
-password: vfnmdfie
-chpasswd: { expire: False }
-ssh_pwauth: True
-ssh-authorized-keys:
-  - ${SSH_PUBLIC_KEY} 
-sudo: ['ALL=(ALL) NOPASSWD:ALL']
-groups: sudo
-shell: /bin/bash
+users:
+  - name: ${VM_USER}
+    password: vfnmdfie
+    chpasswd: { expire: False }
+    ssh_pwauth: True
+    ssh-authorized-keys:
+      - ${SSH_PUBLIC_KEY} 
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    groups: sudo
+    shell: /bin/bash
 EOF
 
 echo "[*] Creating a disk to attach with Cloud-Init configuration..."

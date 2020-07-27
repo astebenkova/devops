@@ -15,8 +15,8 @@ virt-install --name ${VM_NAME} \
 	     --memory ${MEM_SIZE} \
 	     --quiet \
 	     --disk size=${DISK_SIZE},bus=virtio,format=qcow2 \
-             --boot cdrom,hd \
 	     --network network=br1 \
+	     --boot hd \
 	     --graphics ${GRAPHICS} \
 	     --console pty,target_type=serial \
              --location ${IMAGE_FILE} \
