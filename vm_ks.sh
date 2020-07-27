@@ -8,7 +8,7 @@ ISO_FILE="/var/lib/libvirt/images/basic_images/ubuntu-16.04.6-server-amd64.iso"
 VM_IMAGE_DIR=/var/lib/libvirt/images
 OS_TYPE="linux"
 DISK_SIZE=5
-VM_NAME=ubuntu_$(date +"%d%m%Y_%H%M")_ks
+VM_NAME=${OS_VARIANT}_$(date +"%d%m%Y_%H%M")_ks
 KS_CONFIG="172.18.195.61:/share/ks.cfg"
 
 sudo virt-install \

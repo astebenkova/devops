@@ -6,7 +6,7 @@ WORKDIR=/var/lib/libvirt/images
 DISK_SIZE=5G
 VM_HOSTNAME=ubuntu_$(date +"%d_%m_%Y_%H%M")_cloud
 # Please, download the image to IMAGES_DIR
-CLOUD_IMAGE_NAME="ubuntu-server-16.04.qcow2"
+CLOUD_IMAGE_NAME="ubuntu-server-20.04.qcow2"
 VM_USER="arina"
 SSH_PUBLIC_KEY=$(cat ${HOME}/.ssh/id_rsa.pub)
 
@@ -58,7 +58,7 @@ virt-install --connect qemu:///system --virt-type kvm --name ${VM_HOSTNAME} --ra
              --disk ${WORKDIR}/${VM_HOSTNAME}.iso,device=cdrom --import --network network=br1 --noautoconsole
 
 echo "[*] Getting an IP address. Wait a bit..."
-sleep 15
+sleep 20
 VM_IP_ADDRESS=$(virsh domifaddr ${VM_HOSTNAME} | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")
 echo "[*] You can login to VM with: ssh ${VM_USER}@${VM_IP_ADDRESS}"
 
