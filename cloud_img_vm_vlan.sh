@@ -11,8 +11,8 @@ VM_USER="arina"
 SSH_PUBLIC_KEY=$(cat ${HOME}/.ssh/id_rsa.pub)
 
 #NETWORK
-NET1=my-net-nat
-NET2=net-dhcp-arina
+NET1=net-dhcp-arina
+NET2=net-internal-arina
 
 echo "[*] Checking the image format..."
 [ ! -f ${IMAGES_DIR}/${CLOUD_IMAGE_NAME} ] && { echo "[!] There is no such file: ${IMAGES_DIR}/${CLOUD_IMAGE_NAME}. Aborting" ; exit 1; }
