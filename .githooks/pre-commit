@@ -1,7 +1,7 @@
 #! /bin/sh
 
 FailCommit() {
-          echo "PYTHON"
+          echo "You suck, your code is a piece of shit and your fingers shake because you drink too much."
           exit 1
 }
 
