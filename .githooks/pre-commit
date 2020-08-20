@@ -1,0 +1,10 @@
+#! /bin/sh
+
+FailCommit() {
+          echo "PYTHON"
+          exit 1
+}
+
+flake8 . || FailCommit
+
+exit 0
