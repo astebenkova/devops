@@ -5,9 +5,11 @@ import random
 import contextlib
 from contextlib import ExitStack
 import os
+import pdb
 
 average_life_expectancy = (65, 80)
-current_year = datetime.datetime.now().year
+current_time = datetime.datetime.now()
+current_year = current_time.year
 
 
 def death_prediction(age):
@@ -27,12 +29,20 @@ name = str(input("Your name is: "))
 age = int(input("Your age is: "))
 death_prediction(age)
 
-permission = os.getenv("PERM_LOG", False)
+permission = os.getenv("PERM_LOG", True)
 if permission:
-    with ExitStack() as stack:
-        f = stack.enter_context(open('/tmp/death.log', 'w'))
-        stack.enter_context(contextlib.redirect_stdout(f))
-        print(f"You are {name} and you are {age} years old.")
-        death_prediction(age)
+    try:
+        pdb.set_trace()
+        with ExitStack() as stack:
+            filename = "/tmp/death.log"
+            f = stack.enter_context(open(filename, 'x'))
+            stack.enter_context(contextlib.redirect_stdout(f))
+            print(f'{current_time.strftime("%m/%d/%Y, %H:%M:%S")}: You are {name} and you are {age} years old.')
+            death_prediction(age)
+    except FileExistsError:
+        print("[!] File already exists.")
+    finally:
+        print("[*] Execution completed.")
+
 else:
     print("You are not permitted to write a log file.")
