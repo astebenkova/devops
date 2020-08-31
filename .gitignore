@@ -1,3 +1,7 @@
 .env/
 .idea/
 .vscode/
+# Credentials for Google Spreadshit
+credentials.json
+token.pickle
+__pycache__/
