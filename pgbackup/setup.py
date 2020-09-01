@@ -14,6 +14,7 @@ setup(
     url="https://github.com/astebenkova/devops",
     packages=find_packages('src'),
     package_dir={'': 'src'},
+    setup_requires=['wheel'],
     python_requires='>=3.6',
     install_requires=['boto3'],
     entry_points={

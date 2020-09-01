@@ -1,6 +1,7 @@
 .vscode/
 credentials.json
 token.pickle
+deb_dist/
 
 ### Default config
 # Byte-compiled / optimized / DLL files
