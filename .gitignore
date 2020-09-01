@@ -2,6 +2,7 @@
 credentials.json
 token.pickle
 deb_dist/
+.flaskenv
 
 ### Default config
 # Byte-compiled / optimized / DLL files
