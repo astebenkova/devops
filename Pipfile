@@ -12,6 +12,7 @@ tox = "==3.19.0"
 google-api-python-client = "==1.11.0"
 google-auth-httplib2 = "==0.0.4"
 google-auth-oauthlib = "==0.4.1"
+boto3 = "*"
 
 [requires]
 python_version = "3.6"
