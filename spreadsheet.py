@@ -4,13 +4,17 @@ import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+from jinja2 import Environment, FileSystemLoader
+# from pprint import pprint
+
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 # The ID and range of a sample spreadsheet.
-SAMPLE_SPREADSHEET_ID = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms'
-SAMPLE_RANGE_NAME = 'Class Data!A2:E'
+SPREADSHEET_ID = '1XS_YuegNqWfK2f3QLZJe9QQIgsF_0skdg1-L_DGprJ8'
+RANGE_NAME_HW = 'hw_inventory!A2:B'
+RANGE_NAME_CRED = 'hw_access!B2:D'
 
 
 def main():
@@ -40,17 +44,22 @@ def main():
 
     # Call the Sheets API
     sheet = service.spreadsheets()
-    result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
-                                range=SAMPLE_RANGE_NAME).execute()
-    values = result.get('values', [])
+    hw_sheet_result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME_HW).execute()
+    hw_sheet_values = hw_sheet_result.get('values', [])
 
-    if not values:
+    access_sheet_result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME_CRED).execute()
+    access_sheet_values = access_sheet_result.get('values', [])
+
+    whole_info = zip(hw_sheet_values, access_sheet_values)
+
+    if not hw_sheet_values or not access_sheet_values:
         print('No data found.')
     else:
-        print('Name, Major:')
-        for row in values:
-            # Print columns A and E, which correspond to indices 0 and 4.
-            print('%s, %s' % (row[0], row[4]))
+        env = Environment(loader=FileSystemLoader('templates'))
+        template = env.get_template('cloud.j2')
+        output = template.render(servers=hw_sheet_values, creds=access_sheet_values, whole_info=whole_info)
+        with open('inventory.yml', 'w') as f:
+            print(output, file=f)
 
 
 if __name__ == '__main__':

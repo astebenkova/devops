@@ -1,0 +1,45 @@
+cloud:
+  nodes:
+
+    ABCD01:
+      ipmi_user: admin
+      ipmi_pass: qwerty
+      ipmi_ip: 10.17.25.15
+      pxe_mac: AA00BB11CC22
+
+    ABCD02:
+      ipmi_user: arina
+      ipmi_pass: wertyu
+      ipmi_ip: 10.17.25.16
+      pxe_mac: AA00BB11CC32
+
+    ABCD03:
+      ipmi_user: admin
+      ipmi_pass: ertyui
+      ipmi_ip: 10.17.25.17
+      pxe_mac: AA00BB11CC42
+
+    ABCD04:
+      ipmi_user: admin
+      ipmi_pass: rtyuio
+      ipmi_ip: 10.17.25.18
+      pxe_mac: AA00BB11CC52
+
+    ABCD05:
+      ipmi_user: admin
+      ipmi_pass: tyuiop
+      ipmi_ip: 10.17.25.19
+      pxe_mac: AA00BB11CC62
+
+    ABCD06:
+      ipmi_user: admin
+      ipmi_pass: asdfg
+      ipmi_ip: 10.17.25.20
+      pxe_mac: AA00BB11CC72
+
+    ABCD07:
+      ipmi_user: admin
+      ipmi_pass: sdfgh
+      ipmi_ip: 10.17.25.21
+      pxe_mac: AA00BB11CC82
+

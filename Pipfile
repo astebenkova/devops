@@ -18,6 +18,9 @@ pgbackup = {editable = true, path = "./pgbackup"}
 psycopg2-binary = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
+oauth2client = "*"
+netaddr = "*"
+jinja2 = "*"
 
 [requires]
 python_version = "3.6"

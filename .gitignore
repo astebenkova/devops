@@ -3,6 +3,7 @@ credentials.json
 token.pickle
 deb_dist/
 migrations/
+inventory.yml
 
 ### Default config
 # Byte-compiled / optimized / DLL files
