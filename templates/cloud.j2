@@ -1,9 +1,9 @@
 cloud:
   nodes:
-{% for server, cred in whole_info %}
-    {{ server[0] }}:
-      ipmi_user: {{ cred[1] }}
-      ipmi_pass: {{ cred[2] }}
-      ipmi_ip: {{ cred[0] }}
-      pxe_mac: {{ server[1] }}
+{% for server in servers %}
+    node_{{ server[0] }}:
+      ipmi_ip: {{ server[1] }}
+      ipmi_user: {{ server[2] }}
+      ipmi_pass: {{ server[3] }}
+      pxe_mac: {{ server[4] }}
 {% endfor %}

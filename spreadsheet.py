@@ -11,15 +11,21 @@ from jinja2 import Environment, FileSystemLoader
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
-# The ID and range of a sample spreadsheet.
+# The ID and range of spreadsheets.
 SPREADSHEET_ID = '1XS_YuegNqWfK2f3QLZJe9QQIgsF_0skdg1-L_DGprJ8'
 RANGE_NAME_HW = 'hw_inventory!A2:B'
-RANGE_NAME_CRED = 'hw_access!B2:D'
+RANGE_NAME_CRED = 'hw_access!A2:D'
+
+
+def merge(lst1, lst2):
+    """Merges 2 lists into one by a common element"""
+    return [a + [b[1]] for (a, b) in zip(lst1, lst2)]
 
 
 def main():
-    """Shows basic usage of the Sheets API.
-    Prints values from a sample spreadsheet.
+    """
+    Creates a yml cloud config from a Jinja2 template
+    base on the Google Spreadsheets data
     """
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
@@ -50,14 +56,15 @@ def main():
     access_sheet_result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME_CRED).execute()
     access_sheet_values = access_sheet_result.get('values', [])
 
-    whole_info = zip(hw_sheet_values, access_sheet_values)
+    # Combine two sheets in one by a common column "serial"
+    final_sheet = merge(access_sheet_values, hw_sheet_values)
 
     if not hw_sheet_values or not access_sheet_values:
         print('No data found.')
     else:
         env = Environment(loader=FileSystemLoader('templates'))
         template = env.get_template('cloud.j2')
-        output = template.render(servers=hw_sheet_values, creds=access_sheet_values, whole_info=whole_info)
+        output = template.render(servers=final_sheet)
         with open('inventory.yml', 'w') as f:
             print(output, file=f)
 
