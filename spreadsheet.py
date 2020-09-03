@@ -6,7 +6,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from jinja2 import Environment, FileSystemLoader
-from netaddr import EUI, mac_unix_expanded
+from netaddr import EUI, mac_unix_expanded, core
 
 
 # The ID, scope and range of spreadsheets.
@@ -71,9 +71,12 @@ def generate_file_from_template(data, template_name):
 
 def convert_mac(mac):
     """Converts a string to MAC address in UNIX format XX:XX:XX:XX:XX"""
-    addr = EUI(mac)
-    addr.dialect = mac_unix_expanded
-    return addr
+    try:
+        addr = EUI(mac)
+        addr.dialect = mac_unix_expanded
+        return addr
+    except core.AddrFormatError as err:
+        print(f"You are ugly. Go and check the MAC address.\n{err}")
 
 
 def main():
