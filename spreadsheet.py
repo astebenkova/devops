@@ -1,3 +1,4 @@
+# The script creates a yml cloud config from a Jinja2 template based on the Google Spreadsheets data
 from __future__ import print_function
 import pickle
 import os.path
@@ -5,32 +6,24 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from jinja2 import Environment, FileSystemLoader
-# from pprint import pprint
+from netaddr import EUI, mac_unix_expanded
 
 
-# If modifying these scopes, delete the file token.pickle.
+# The ID, scope and range of spreadsheets.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-
-# The ID and range of spreadsheets.
 SPREADSHEET_ID = '1XS_YuegNqWfK2f3QLZJe9QQIgsF_0skdg1-L_DGprJ8'
-RANGE_NAME_HW = 'hw_inventory!A2:B'
-RANGE_NAME_CRED = 'hw_access!A2:D'
+RANGE_NAME_1 = 'hw_inventory!A2:B'
+RANGE_NAME_2 = 'hw_access!A2:D'
+TEMPLATE_PATH = './templates'
+# Path to Google Credentials (.json)
+GOOGLE_CREDENTIALS = './credentials.json'
 
 
-def merge(lst1, lst2):
-    """Merges 2 lists into one by a common element"""
-    return [a + [b[1]] for (a, b) in zip(lst1, lst2)]
-
-
-def main():
-    """
-    Creates a yml cloud config from a Jinja2 template
-    base on the Google Spreadsheets data
-    """
+def authenticate():
+    """Authenticate with Google"""
     creds = None
-    # The file token.pickle stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
+    # The file token.pickle stores the user's access and refresh tokens, and is created
+    # automatically when the authorization flow completes for the first time.
     if os.path.exists('token.pickle'):
         with open('token.pickle', 'rb') as token:
             creds = pickle.load(token)
@@ -39,34 +32,62 @@ def main():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file(GOOGLE_CREDENTIALS, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
             pickle.dump(creds, token)
 
-    service = build('sheets', 'v4', credentials=creds)
+    return creds
 
-    # Call the Sheets API
+
+def merge_lists(list1, list2):
+    """
+    Merges 2 lists into one by a common element
+    NOTE: the first list should be the one containing more columns
+    """
+    return [a + [b[1]] for (a, b) in zip(list1, list2)]
+
+
+def sheet_into_list(spreadsheet_id, range_name, credentials):
+    """Returns a list of lists out of a Google sheet"""
+    service = build('sheets', 'v4', credentials=credentials)
     sheet = service.spreadsheets()
-    hw_sheet_result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME_HW).execute()
-    hw_sheet_values = hw_sheet_result.get('values', [])
+    sheet_result = sheet.values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
+    sheet_list = sheet_result.get('values', [])
 
-    access_sheet_result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME_CRED).execute()
-    access_sheet_values = access_sheet_result.get('values', [])
+    return sheet_list
 
-    # Combine two sheets in one by a common column "serial"
-    final_sheet = merge(access_sheet_values, hw_sheet_values)
 
-    if not hw_sheet_values or not access_sheet_values:
-        print('No data found.')
+def generate_file_from_template(data, template_name):
+    """Generates a yml config file from a template"""
+    env = Environment(loader=FileSystemLoader(TEMPLATE_PATH))
+    env.globals['convert_mac'] = convert_mac
+    template = env.get_template(template_name)
+    output = template.render(servers=data)
+    with open('inventory.yml', 'w') as f:
+        print(output, file=f)
+
+
+def convert_mac(mac):
+    """Converts a string to MAC address in UNIX format XX:XX:XX:XX:XX"""
+    addr = EUI(mac)
+    addr.dialect = mac_unix_expanded
+    return addr
+
+
+def main():
+    """Main function"""
+    creds = authenticate()
+    hw_sheet_list = sheet_into_list(SPREADSHEET_ID, RANGE_NAME_1, creds)
+    access_sheet_list = sheet_into_list(SPREADSHEET_ID, RANGE_NAME_2, creds)
+
+    if not hw_sheet_list or not access_sheet_list:
+        print('One or both of the spreadsheets are empty.')
     else:
-        env = Environment(loader=FileSystemLoader('templates'))
-        template = env.get_template('cloud.j2')
-        output = template.render(servers=final_sheet)
-        with open('inventory.yml', 'w') as f:
-            print(output, file=f)
+        # Combine two sheets in one by a common column "serial"
+        final_sheet = merge_lists(access_sheet_list, hw_sheet_list)
+        generate_file_from_template(final_sheet, "cloud.j2")
 
 
 if __name__ == '__main__':
