@@ -21,6 +21,7 @@ flask-migrate = "*"
 oauth2client = "*"
 netaddr = "*"
 jinja2 = "*"
+coverage = "*"
 
 [requires]
 python_version = "3.6"
