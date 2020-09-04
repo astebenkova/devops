@@ -1,8 +1,8 @@
 from unittest import TestCase, skip
-from .spreadsheet import convert_mac, merge_lists
+from .spreadsheet import *
 
 
-class SpreadheetTests(TestCase):
+class SpreadsheetTests(TestCase):
 
     def setUp(self):
         self.sheet1 = [['name1', 'ip1', 'user1', 'password1'],
@@ -25,10 +25,22 @@ class SpreadheetTests(TestCase):
         """Tests that MAC is being converted properly"""
         mac_1 = "94-e6-f7-63-93-b8"
         mac_2 = "94E6F76393B8"
-        mac_3 = "94E6F76393B812JH"
+        mac_3 = "94E6F76fghjg393B812JH"
         mac = convert_mac(mac_1)
         self.assertEqual(mac, "94:e6:f7:63:93:b8")
         mac = convert_mac(mac_2)
         self.assertEqual(mac, "94:e6:f7:63:93:b8")
         mac = convert_mac(mac_3)
         self.assertIsNone(mac)
+
+    def check_lists_empty(self):
+        """Tests that the script breaks if one of the lists is empty (or both)"""
+        sheet3 = []
+        with self.assertRaises(EmptyListError):
+            merge_lists(sheet3, self.sheet1)
+
+    def check_authentication(self):
+        """Makes sure authentication fails without a json cred file"""
+        wrong_creds = "./creds.json"
+        with self.assertRaises(Exception):
+            authenticate(wrong_creds)

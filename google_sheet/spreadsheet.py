@@ -19,7 +19,12 @@ TEMPLATE_PATH = './templates'
 GOOGLE_CREDENTIALS = './credentials.json'
 
 
-def authenticate():
+# A custom exception error just for fun
+class EmptyListError(Exception):
+    pass
+
+
+def authenticate(google_cred_json):
     """Authenticate with Google"""
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is created
@@ -32,7 +37,7 @@ def authenticate():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(GOOGLE_CREDENTIALS, SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file(google_cred_json, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
@@ -46,6 +51,9 @@ def merge_lists(list1, list2):
     Merges 2 lists into one by a common element
     NOTE: the first list should be the one containing more columns
     """
+    if not list1 or not list2:
+        raise EmptyListError
+
     return [a + [b[1]] for (a, b) in zip(list1, list2)]
 
 
@@ -81,16 +89,12 @@ def convert_mac(mac):
 
 def main():
     """Main function"""
-    creds = authenticate()
+    creds = authenticate(GOOGLE_CREDENTIALS)
     hw_sheet_list = sheet_into_list(SPREADSHEET_ID, RANGE_NAME_1, creds)
     access_sheet_list = sheet_into_list(SPREADSHEET_ID, RANGE_NAME_2, creds)
-
-    if not hw_sheet_list or not access_sheet_list:
-        print('One or both of the spreadsheets are empty.')
-    else:
-        # Combine two sheets in one by a common column "serial"
-        final_sheet = merge_lists(access_sheet_list, hw_sheet_list)
-        generate_file_from_template(final_sheet, "cloud.j2")
+    # Combine two sheets in one by a common column "serial"
+    final_sheet = merge_lists(access_sheet_list, hw_sheet_list)
+    generate_file_from_template(final_sheet, "cloud.j2")
 
 
 if __name__ == '__main__':
