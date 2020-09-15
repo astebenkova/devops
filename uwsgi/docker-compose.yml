@@ -1,0 +1,19 @@
+version: "2.4"
+services:
+  app: 
+    build: .
+    container_name: app
+    restart: unless-stopped
+    hostname: app
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    hostname: nginx
+    restart: unless-stopped
+    volumes:
+    - "./conf.d/ssl:/etc/ssl"
+    - "./conf.d/hello.conf:/etc/nginx/conf.d/default.conf"
+    ports:
+    - "443:443"
+    - "80:80"
