@@ -22,6 +22,7 @@ oauth2client = "*"
 netaddr = "*"
 jinja2 = "*"
 coverage = "*"
+flask = "*"
 
 [requires]
 python_version = "3.6"
