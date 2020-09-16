@@ -15,15 +15,17 @@ RUN apt-get update && apt-get install -yq \
 	apt-get purge build-essential wget -y && \
 	apt-get autoremove -y
 
-FROM ubuntu:18.04
 
-RUN apt-get update && apt-get install -yq \
-	python3-pip
+FROM ubuntu:18.04
 
 WORKDIR /app
 COPY ./requirements.txt /app
 
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN apt-get update && apt-get install -yq \
+	python3-pip && \
+    pip3 install --no-cache-dir -r requirements.txt && \
+    apt-get purge python3-pip -y && \
+    apt-get autoremove -y && apt-get clean
 
 COPY . /app
 COPY --from=compiler /uwsgi/uwsgi /app
