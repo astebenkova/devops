@@ -1,5 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+from app.forms import EmailForm
 
 
 app = Flask(__name__)
@@ -18,6 +19,14 @@ class User(db.Model):
         self.email = email
 
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def hello():
-    return render_template("results.html")
+    msg = ""
+    form = EmailForm()
+    if form.validate_on_submit():
+        email = request.form['email']
+        record = User(email=email)
+        db.session.add(record)
+        db.session.commit()
+        msg = "Thanks for your email!"
+    return render_template("results.html", form=form, message=msg)

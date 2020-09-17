@@ -6,5 +6,18 @@
     <body style="background-color:black;">
         <p style="color:white">Best frontender ever &#128540;</p>
         <img src="https://media.giphy.com/media/cLB6YgcOiYmKRZqk8Z/giphy.gif" alt="Hello">
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <p style="color:white">
+                {{ form.email.label }}<br>
+                {{ form.email(size=32) }}
+            </p>
+            <p>{{ form.submit() }}</p>
+        </form>
+        <div>
+            {% if message %}
+                <li style="color: green;">{{ message }}</li>
+            {% endif %}
+        </div>
     </body>
 </html>

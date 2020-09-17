@@ -25,6 +25,7 @@ coverage = "*"
 flask = "*"
 sqlalchemy = "*"
 gunicorn = "*"
+flask-wtf = "*"
 
 [requires]
 python_version = "3.6"
