@@ -26,7 +26,11 @@ def hello():
     if form.validate_on_submit():
         email = request.form['email']
         record = User(email=email)
-        db.session.add(record)
-        db.session.commit()
-        msg = "Thanks for your email!"
+        exists = db.session.query(db.exists().where(User.email == email)).scalar()
+        if not exists:
+            db.session.add(record)
+            db.session.commit()
+            msg = "Thanks for your email, buddy! We will spam you later."
+        else:
+            msg = "This email already exists!"
     return render_template("results.html", form=form, message=msg)
