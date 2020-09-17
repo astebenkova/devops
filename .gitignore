@@ -4,6 +4,7 @@ token.pickle
 deb_dist/
 migrations/
 inventory.yml
+.env*
 
 ### Default config
 # Byte-compiled / optimized / DLL files

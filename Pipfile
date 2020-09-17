@@ -23,6 +23,8 @@ netaddr = "*"
 jinja2 = "*"
 coverage = "*"
 flask = "*"
+sqlalchemy = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.6"
