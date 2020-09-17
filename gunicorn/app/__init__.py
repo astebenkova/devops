@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -20,4 +20,4 @@ class User(db.Model):
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    return render_template("results.html")
