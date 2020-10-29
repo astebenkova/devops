@@ -6,9 +6,10 @@ WORKDIR=/var/lib/libvirt/images
 DISK_SIZE=5G
 VM_HOSTNAME=ubuntu_$(date +"%d_%m_%Y_%H%M")_cloud
 # Please, download the image to IMAGES_DIR
-CLOUD_IMAGE_NAME="ubuntu-server-20.04.qcow2"
+CLOUD_IMAGE_NAME="ubuntu-server-16.04.qcow2"
 VM_USER="arina"
 SSH_PUBLIC_KEY=$(cat ${HOME}/.ssh/id_rsa.pub)
+VM_NETWORK="salt-network"
 
 echo "[*] Checking the image format..."
 [ ! -f ${IMAGES_DIR}/${CLOUD_IMAGE_NAME} ] && { echo "[!] There is no such file: ${IMAGES_DIR}/${CLOUD_IMAGE_NAME}. Aborting" ; exit 1; }
@@ -55,7 +56,7 @@ sudo mkisofs -o "${WORKDIR}/${VM_HOSTNAME}.iso" -volid cidata -joliet -rock /tmp
 echo "[*] Launching a Virtual Machine..."
 virt-install --connect qemu:///system --virt-type kvm --name ${VM_HOSTNAME} --ram 512 --vcpus=1 --os-type linux \
              --os-variant ubuntu16.04 --disk path=${WORKDIR}/${VM_HOSTNAME}.qcow2,format=qcow2 \
-             --disk ${WORKDIR}/${VM_HOSTNAME}.iso,device=cdrom --import --network network=br1 --noautoconsole
+             --disk ${WORKDIR}/${VM_HOSTNAME}.iso,device=cdrom --import --network network=${VM_NETWORK} --noautoconsole
 
 echo "[*] Getting an IP address. Wait a bit..."
 sleep 20
