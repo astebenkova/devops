@@ -1,0 +1,16 @@
+<network>
+  <name>management-openstack</name>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <ip address='172.38.0.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='172.38.0.2' end='172.38.0.254'/>
+      <host mac='7c:33:05:90:69:8e' name='network-node-openstack' ip='172.38.0.2'/>
+      <host mac='76:0f:4f:09:e5:1d' name='compute-node-openstack' ip='172.38.0.3'/>
+      <host mac='50:3f:7d:45:dc:e2' name='controller-node-openstack' ip='172.38.0.5'/>
+    </dhcp>
+  </ip>
+</network>
