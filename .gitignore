@@ -5,6 +5,7 @@ deb_dist/
 migrations/
 inventory.yml
 .env*
+.adminrc
 
 ### Default config
 # Byte-compiled / optimized / DLL files

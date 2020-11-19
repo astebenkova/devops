@@ -26,6 +26,7 @@ flask = "*"
 sqlalchemy = "*"
 gunicorn = "*"
 flask-wtf = "*"
+python-openstackclient = "*"
 
 [requires]
 python_version = "3.6"
