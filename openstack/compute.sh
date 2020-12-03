@@ -3,7 +3,7 @@
 # Predefined variables
 IMAGES_DIR=/var/lib/libvirt/images/basic_images
 WORKDIR=/var/lib/libvirt/images
-DISK_SIZE=20
+DISK_SIZE=20G
 VM_HOSTNAME="compute-node-openstack"
 # Please, download the image to IMAGES_DIR
 CLOUD_IMAGE_NAME="ubuntu-server-18.04.qcow2"
@@ -36,6 +36,12 @@ local-hostname: compute
 network-interfaces: |
   auto ens3
   iface ens3 inet dhcp
+  
+  auto ens4
+  iface ens4 inet dhcp
+
+  auto ens5
+  iface ens5 inet dhcp
 EOF
 
 cat > /tmp/user-data <<EOF

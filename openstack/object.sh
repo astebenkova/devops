@@ -3,14 +3,13 @@
 # Predefined variables
 IMAGES_DIR=/var/lib/libvirt/images/basic_images
 WORKDIR=/var/lib/libvirt/images
-DISK_SIZE=15G
-VM_HOSTNAME="controller-node-openstack"
+DISK_SIZE=10G
+VM_HOSTNAME="swift-storage-openstack"
 # Please, download the image to IMAGES_DIR
 CLOUD_IMAGE_NAME="ubuntu-server-18.04.qcow2"
 VM_USER="arina"
 SSH_PUBLIC_KEY=$(cat ${HOME}/.ssh/id_rsa.pub)
 VM_NETWORK_1="management-openstack"
-VM_NETWORK_2="external-openstack"
 
 echo "[*] Checking the image format..."
 [ ! -f ${IMAGES_DIR}/${CLOUD_IMAGE_NAME} ] && { echo "[!] There is no such file: ${IMAGES_DIR}/${CLOUD_IMAGE_NAME}. Aborting" ; exit 1; }
@@ -30,8 +29,8 @@ sudo qemu-img resize ${WORKDIR}/${VM_HOSTNAME}.qcow2 ${DISK_SIZE}
 
 echo "[*] Creating meta-data and user-data..."
 cat > /tmp/meta-data <<EOF
-hostname: controller
-local-hostname: controller
+hostname: object
+local-hostname: object
 network-interfaces: |
   auto ens3
   iface ens3 inet dhcp
@@ -55,13 +54,12 @@ echo "[*] Creating a disk to attach with Cloud-Init configuration..."
 sudo mkisofs -o "${WORKDIR}/${VM_HOSTNAME}.iso" -volid cidata -joliet -rock /tmp/user-data /tmp/meta-data > /dev/null
 
 echo "[*] Launching a Virtual Machine..."
-virt-install --connect qemu:///system --virt-type kvm --name ${VM_HOSTNAME} --ram 6000 --vcpus=4 --os-type linux \
+virt-install --connect qemu:///system --virt-type kvm --name ${VM_HOSTNAME} --ram 1024 --vcpus=1 --os-type linux \
              --os-variant ubuntu18.04 --disk path=${WORKDIR}/${VM_HOSTNAME}.qcow2,format=qcow2 \
-             --disk ${WORKDIR}/${VM_HOSTNAME}.iso,device=cdrom --import --network network=${VM_NETWORK_1} \
-             --network network=${VM_NETWORK_2} --noautoconsole
+             --disk ${WORKDIR}/${VM_HOSTNAME}.iso,device=cdrom --import --network network=${VM_NETWORK_1} --noautoconsole
 
 echo "[*] Getting an IP address. Wait a bit..."
-sleep 20
+sleep 25
 VM_IP_ADDRESS=$(virsh domifaddr ${VM_HOSTNAME} | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")
 echo "[*] You can login to VM with: ssh ${VM_USER}@${VM_IP_ADDRESS}"
 

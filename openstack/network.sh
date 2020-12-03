@@ -3,7 +3,7 @@
 # Predefined variables
 IMAGES_DIR=/var/lib/libvirt/images/basic_images
 WORKDIR=/var/lib/libvirt/images
-DISK_SIZE=10
+DISK_SIZE=10G
 VM_HOSTNAME="network-node-openstack"
 # Please, download the image to IMAGES_DIR
 CLOUD_IMAGE_NAME="ubuntu-server-18.04.qcow2"
